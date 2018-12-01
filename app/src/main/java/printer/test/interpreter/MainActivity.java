@@ -1,15 +1,274 @@
 package printer.test.interpreter;
 
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
+
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import printer.test.interpreter.app.App;
+import printer.test.interpreter.base.BaseActivity;
+import printer.test.interpreter.popupwindow.CommonPopupWindow;
+import printer.test.interpreter.presenter.MainPresenter;
+import printer.test.interpreter.presenter.impl.MainPresenterImpl;
+
+public class MainActivity extends BaseActivity implements CommonPopupWindow.ViewInterface ,MainView{
+    private CommonPopupWindow popupWindow;
+    private LinearLayout mubiao, star_lang;
+    private List<Language> languages = new ArrayList<>();
+    private boolean isstar_lang = true;
+    @BindView(R.id.star_lan_iv)
+    ImageView star_lan_iv;
+    @BindView(R.id.star_lan_tv)
+    TextView star_lan_tv;
+    @BindView(R.id.mubiao_iv)
+    ImageView mubiao_iv;
+    @BindView(R.id.mubiao_tv)
+    TextView mubiao_tv;
+
+    @BindView(R.id.jiaohuan)
+    TextView jiaohuan;
+    @BindView(R.id.top)
+    View top;
+    //展示内容
+    private String contexturl;
+    private MainPresenter presenter;
+    @Override
+    protected int getLayout() {
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        return R.layout.activity_main;
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_main);
+    protected void initEvent() {
+        super.initEvent();
+        String ua = "";
+        try {
+            ua = Utils.changeURLEncoding(Utils.getUserAgent(MainActivity.this));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        final String finalUa = ua;
+        new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                try {
+
+                    Thread.sleep(5000);
+
+                    presenter.requestAdvertisement("com.fanyiguan", Utils.changeURLEncoding("翻译官"), finalUa, "1.1.0", Utils.getIP(MainActivity.this), android.os.Build.MANUFACTURER+"", android.os.Build.MODEL, Utils.getIMEI(MainActivity.this), 720, 1280);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
+    }
+
+    @Override
+    protected void initView() {
+        presenter = new MainPresenterImpl();
+        presenter.attachView(this);
+        mubiao = findViewById(R.id.mubiao);
+        star_lang = findViewById(R.id.star_lang);
+        languages.add(new Language(R.mipmap.bg, "Bulgarian"));
+        languages.add(new Language(R.mipmap.um, "English"));
+        languages.add(new Language(R.mipmap.cn, "Chinese"));
+        languages.add(new Language(R.mipmap.tw, "Chinese traditional"));
+        languages.add(new Language(R.mipmap.fi, "Finnish"));
+        languages.add(new Language(R.mipmap.fr, "French"));
+        languages.add(new Language(R.mipmap.dk, "Danish"));
+        languages.add(new Language(R.mipmap.jp, "Japanese"));
+        languages.add(new Language(R.mipmap.kr, "Korean"));
+        languages.add(new Language(R.mipmap.no, "Norwegian"));
+        languages.add(new Language(R.mipmap.ph, "Filipino"));
+        languages.add(new Language(R.mipmap.pe, "Peru"));
+        languages.add(new Language(R.mipmap.cz, "Czech"));
+        languages.add(new Language(R.mipmap.va, "Vaticano"));
+        languages.add(new Language(R.mipmap.sl, "Slovenian"));
+        star_lang.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isstar_lang = true;
+                showAll();
+            }
+        });
+        mubiao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isstar_lang = false;
+                showAll();
+            }
+        });
+        jiaohuan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Drawable drawable =  mubiao_iv.getBackground();
+                Drawable drawable2 =  star_lan_iv.getBackground();
+                String str1 = mubiao_tv.getText().toString();
+                String str2 =star_lan_tv.getText().toString();
+                star_lan_iv.setBackground(drawable);
+                mubiao_iv.setBackground(drawable2);
+                star_lan_tv.setText(str1);
+                mubiao_tv.setText(str2);
+            }
+        });
+    }
+
+    //向上弹出
+    public void showUpPop(View view) {
+        if (popupWindow != null && popupWindow.isShowing()) return;
+        popupWindow = new CommonPopupWindow.Builder(this)
+                .setView(R.layout.web_layout)
+                .setWidthAndHeight(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                .setViewOnclickListener(this)
+                .create();
+        popupWindow.showAsDropDown(view, 0, -(popupWindow.getHeight() + view.getMeasuredHeight()));
+
+    }
+
+    //向上弹出
+    public void showUpPopPic(View view) {
+        if (popupWindow != null && popupWindow.isShowing()) return;
+        popupWindow = new CommonPopupWindow.Builder(this)
+                .setView(R.layout.pic_layout)
+                .setWidthAndHeight(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                .setViewOnclickListener(this)
+                .create();
+        popupWindow.showAsDropDown(view, 0, -(popupWindow.getHeight() + view.getMeasuredHeight()));
+
+    }
+
+    //全屏弹出
+    public void showAll() {
+        if (popupWindow != null && popupWindow.isShowing()) return;
+        View upView = LayoutInflater.from(this).inflate(R.layout.popup_up, null);
+        //测量View的宽高
+        Utils.measureWidthAndHeight(upView);
+        popupWindow = new CommonPopupWindow.Builder(this)
+                .setView(R.layout.popup_up)
+//                .setWidthAndHeight(ViewGroup.LayoutParams.WRAP_CONTENT, upView.getMeasuredHeight())
+                .setBackGroundLevel(0.5f)//取值范围0.0f-1.0f 值越小越暗
+                .setAnimationStyle(R.style.AnimUp)
+                .setViewOnclickListener(this)
+                .create();
+        popupWindow.showAtLocation(findViewById(android.R.id.content), Gravity.CENTER, 0, 0);
+    }
+
+    @Override
+    public void getChildView(View view, int layoutResId) {
+        switch (layoutResId) {
+            case R.layout.popup_up:
+                TextView title = view.findViewById(R.id.title);
+                RecyclerView lan_list = view.findViewById(R.id.lan_list);
+                lan_list.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+                LanguageAdapter languageAdapter = new LanguageAdapter(languages);
+                lan_list.setAdapter(languageAdapter);
+                if (isstar_lang == true) {
+                    title.setText("始源语言:  ");
+                } else {
+                    title.setText("目标语言:  ");
+                }
+                languageAdapter.setOnClickListenerItime(new LanguageAdapter.OnClickListenerItime() {
+                    @Override
+                    public void onItime(Language language) {
+                        if (isstar_lang == true) {
+                            star_lan_iv.setBackgroundResource(language.getPic());
+                            star_lan_tv.setText(language.getLanguage());
+                        } else {
+                            mubiao_iv.setBackgroundResource(language.getPic());
+                            mubiao_tv.setText(language.getLanguage());
+                        }
+
+                        popupWindow.dismiss();
+                    }
+                });
+                break;
+            case R.layout.pic_layout:
+                ImageView pic = view.findViewById(R.id.show_context);
+                RequestOptions requestOptions = new RequestOptions();
+                requestOptions.error(R.mipmap.jugao);//异常时候显示的图片
+                requestOptions.placeholder(R.mipmap.jugao);//加载成功前显示的图片
+                requestOptions.fallback(R.mipmap.jugao); //url为空的时候,显示的图片
+                requestOptions.diskCacheStrategy(DiskCacheStrategy.NONE); //不缓存
+                Glide.with(App.mContext).load(contexturl).apply(requestOptions).into(pic);
+                view.findViewById(R.id.close).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        popupWindow.dismiss();
+                    }
+                });
+                break;
+            case R.layout.web_layout:
+                WebView webView = view.findViewById(R.id.show_context);
+                WebSettings settings = webView.getSettings();
+                settings.setJavaScriptEnabled(true);
+                settings.setDomStorageEnabled(true);
+                settings.setUseWideViewPort(true);
+                settings.setLoadWithOverviewMode(true);
+                webView.setWebViewClient(new WebViewClient());
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.TEXT_AUTOSIZING);
+                } else {
+                    settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
+                }
+                webView.loadData(contexturl, "text/html;charset=utf-8", "utf-8");
+                view.findViewById(R.id.close).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        popupWindow.dismiss();
+                    }
+                });
+                break;
+        }
+    }
+
+    @Override
+    public void getShowText(String context, boolean isPic) {
+        contexturl = context;
+        if (isPic == true) {
+            showUpPopPic(top);
+        } else {
+            showUpPop(top);
+        }
+    }
+
+    @Override
+    public void addResNumber(int number) {
+        initEvent();
+    }
+
+    @Override
+    public void addSuccessNumber(int number) {
+
     }
 }
