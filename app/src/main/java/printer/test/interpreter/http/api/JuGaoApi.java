@@ -33,7 +33,11 @@ public interface JuGaoApi {
      * @param ph      设备物理屏幕高度  例如：1280
      */
     @GET("api.m")
-    Call<ResponseData> requestAdvertisement(@Query("adid") String adid, @Query("adtype") String adtype, @Query("width") int width, @Query("height") int height, @Query("pkgname") String pkgname, @Query("appname") String appname,
-                                            @Query("ua") String ua, @Query("os") int os, @Query("osv") String osv, @Query("appv") String appv, @Query("carrier") int carrier, @Query("conn") int conn, @Query("ip") String ip,
-                                            @Query("brand") String brand, @Query("model") String model, @Query("uuid") String uuid, @Query("pw") int pw, @Query("ph") int ph);
+    Call<ResponseData> requestAdvertisement(@Query("adid") String adid, @Query("adtype") String adtype, @Query("width") int width, @Query("height") int height, @Query("pkgname") String pkgname, @Query("appname") String appname, @Query("ua") String ua, @Query("os") int os, @Query("osv") String osv, @Query("appv") String appv, @Query("carrier") int carrier, @Query("conn") int conn, @Query("ip") String ip, @Query("brand") String brand, @Query("model") String model, @Query("uuid") String uuid, @Query("pw") int pw, @Query("ph") int ph);
+
+    @GET("")
+    Call<ResponseData> baguang();
+
+    @GET("")
+    Call<ResponseData> dianji();
 }

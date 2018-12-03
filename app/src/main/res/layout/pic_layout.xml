@@ -5,8 +5,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:background="#f9f9f9"
-        android:layout_height="120dp">
+        android:layout_height="60dp"
+        android:background="#f9f9f9">
 
         <ImageView
             android:id="@+id/show_context"
@@ -15,12 +15,12 @@
 
         </ImageView>
 
-        <Button
+        <ImageView
             android:id="@+id/close"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:text="关闭" />
+            android:layout_margin="10dp"
+            android:background="@mipmap/close" />
     </RelativeLayout>
 </RelativeLayout>

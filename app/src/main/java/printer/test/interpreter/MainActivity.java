@@ -6,6 +6,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,7 +36,7 @@ import printer.test.interpreter.popupwindow.CommonPopupWindow;
 import printer.test.interpreter.presenter.MainPresenter;
 import printer.test.interpreter.presenter.impl.MainPresenterImpl;
 
-public class MainActivity extends BaseActivity implements CommonPopupWindow.ViewInterface ,MainView{
+public class MainActivity extends BaseActivity implements CommonPopupWindow.ViewInterface, MainView {
     private CommonPopupWindow popupWindow;
     private LinearLayout mubiao, star_lang;
     private List<Language> languages = new ArrayList<>();
@@ -54,6 +57,10 @@ public class MainActivity extends BaseActivity implements CommonPopupWindow.View
     //展示内容
     private String contexturl;
     private MainPresenter presenter;
+
+    private List<String> thclkurl;
+    private List<String> imgtracking;
+
     @Override
     protected int getLayout() {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -64,6 +71,11 @@ public class MainActivity extends BaseActivity implements CommonPopupWindow.View
     protected void initEvent() {
         super.initEvent();
         String ua = "";
+        Display display = getWindowManager().getDefaultDisplay();
+        final int heigth = display.getHeight();
+        final int width = display.getWidth();
+
+        Log.e("jugao", "heigth：" + heigth + "   width  " + width + "  osv :" + Utils.getSDK());
         try {
             ua = Utils.changeURLEncoding(Utils.getUserAgent(MainActivity.this));
         } catch (UnsupportedEncodingException e) {
@@ -75,10 +87,8 @@ public class MainActivity extends BaseActivity implements CommonPopupWindow.View
             public void run() {
                 super.run();
                 try {
-
                     Thread.sleep(5000);
-
-                    presenter.requestAdvertisement("com.fanyiguan", Utils.changeURLEncoding("翻译官"), finalUa, "1.1.0", Utils.getIP(MainActivity.this), android.os.Build.MANUFACTURER+"", android.os.Build.MODEL, Utils.getIMEI(MainActivity.this), 720, 1280);
+                    presenter.requestAdvertisement("com.fanyiguan", Utils.changeURLEncoding("翻译官"), finalUa, "1.1.0", Utils.getIP(MainActivity.this), android.os.Build.MANUFACTURER + "", android.os.Build.MODEL, Utils.getIMEI(MainActivity.this), width, heigth);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (UnsupportedEncodingException e) {
@@ -132,10 +142,10 @@ public class MainActivity extends BaseActivity implements CommonPopupWindow.View
         jiaohuan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Drawable drawable =  mubiao_iv.getBackground();
-                Drawable drawable2 =  star_lan_iv.getBackground();
+                Drawable drawable = mubiao_iv.getBackground();
+                Drawable drawable2 = star_lan_iv.getBackground();
                 String str1 = mubiao_tv.getText().toString();
-                String str2 =star_lan_tv.getText().toString();
+                String str2 = star_lan_tv.getText().toString();
                 star_lan_iv.setBackground(drawable);
                 mubiao_iv.setBackground(drawable2);
                 star_lan_tv.setText(str1);
@@ -147,11 +157,7 @@ public class MainActivity extends BaseActivity implements CommonPopupWindow.View
     //向上弹出
     public void showUpPop(View view) {
         if (popupWindow != null && popupWindow.isShowing()) return;
-        popupWindow = new CommonPopupWindow.Builder(this)
-                .setView(R.layout.web_layout)
-                .setWidthAndHeight(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-                .setViewOnclickListener(this)
-                .create();
+        popupWindow = new CommonPopupWindow.Builder(this).setView(R.layout.web_layout).setWidthAndHeight(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).setViewOnclickListener(this).create();
         popupWindow.showAsDropDown(view, 0, -(popupWindow.getHeight() + view.getMeasuredHeight()));
 
     }
@@ -159,11 +165,7 @@ public class MainActivity extends BaseActivity implements CommonPopupWindow.View
     //向上弹出
     public void showUpPopPic(View view) {
         if (popupWindow != null && popupWindow.isShowing()) return;
-        popupWindow = new CommonPopupWindow.Builder(this)
-                .setView(R.layout.pic_layout)
-                .setWidthAndHeight(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-                .setViewOnclickListener(this)
-                .create();
+        popupWindow = new CommonPopupWindow.Builder(this).setView(R.layout.pic_layout).setWidthAndHeight(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).setViewOnclickListener(this).create();
         popupWindow.showAsDropDown(view, 0, -(popupWindow.getHeight() + view.getMeasuredHeight()));
 
     }
@@ -174,13 +176,10 @@ public class MainActivity extends BaseActivity implements CommonPopupWindow.View
         View upView = LayoutInflater.from(this).inflate(R.layout.popup_up, null);
         //测量View的宽高
         Utils.measureWidthAndHeight(upView);
-        popupWindow = new CommonPopupWindow.Builder(this)
-                .setView(R.layout.popup_up)
+        popupWindow = new CommonPopupWindow.Builder(this).setView(R.layout.popup_up)
 //                .setWidthAndHeight(ViewGroup.LayoutParams.WRAP_CONTENT, upView.getMeasuredHeight())
                 .setBackGroundLevel(0.5f)//取值范围0.0f-1.0f 值越小越暗
-                .setAnimationStyle(R.style.AnimUp)
-                .setViewOnclickListener(this)
-                .create();
+                .setAnimationStyle(R.style.AnimUp).setViewOnclickListener(this).create();
         popupWindow.showAtLocation(findViewById(android.R.id.content), Gravity.CENTER, 0, 0);
     }
 
@@ -225,6 +224,9 @@ public class MainActivity extends BaseActivity implements CommonPopupWindow.View
                     @Override
                     public void onClick(View v) {
                         popupWindow.dismiss();
+                        for (int i = 0; i < thclkurl.size(); i++) {
+                            presenter.dianJi(thclkurl.get(i)+"/");
+                        }
                     }
                 });
                 break;
@@ -246,6 +248,9 @@ public class MainActivity extends BaseActivity implements CommonPopupWindow.View
                     @Override
                     public void onClick(View v) {
                         popupWindow.dismiss();
+                        for (int i = 0; i < thclkurl.size(); i++) {
+                            presenter.dianJi(thclkurl.get(i)+"/");
+                        }
                     }
                 });
                 break;
@@ -253,7 +258,12 @@ public class MainActivity extends BaseActivity implements CommonPopupWindow.View
     }
 
     @Override
-    public void getShowText(String context, boolean isPic) {
+    public void getShowText(String context, boolean isPic, List<String> thclkurl, List<String> imgtracking) {
+        this.thclkurl = thclkurl;
+        this.imgtracking = imgtracking;
+        for (int i = 0; i < imgtracking.size(); i++) {
+            presenter.baoGuang(imgtracking.get(i)+"/");
+        }
         contexturl = context;
         if (isPic == true) {
             showUpPopPic(top);

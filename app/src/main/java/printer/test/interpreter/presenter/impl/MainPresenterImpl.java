@@ -8,6 +8,7 @@ import printer.test.interpreter.MainView;
 import printer.test.interpreter.ResponseData;
 import printer.test.interpreter.Utils;
 import printer.test.interpreter.app.App;
+import printer.test.interpreter.http.response.BaoGuang;
 import printer.test.interpreter.http.response.JuGaoModel;
 import printer.test.interpreter.presenter.MainPresenter;
 import retrofit2.Call;
@@ -18,9 +19,11 @@ public class MainPresenterImpl<T extends MainView> implements MainPresenter<T> {
     private T baseView;
     private JuGaoModel model;
     private boolean isStrart = true;
+    private BaoGuang baoGuang;
 
     public MainPresenterImpl() {
         model = new JuGaoModel();
+        baoGuang = new BaoGuang();
     }
 
     @Override
@@ -38,17 +41,17 @@ public class MainPresenterImpl<T extends MainView> implements MainPresenter<T> {
                         //200：有广告 204：无广告
                         Log.e("Response", response.toString());
                         Log.e("Response", response.body().toString());
-                        if (Integer.parseInt(response.body().getReturncode())==200) {
+                        if (Integer.parseInt(response.body().getReturncode()) == 200) {
                             Log.e("Response*************", response.toString());
                             if (Integer.parseInt(response.body().getAdnum()) > 0) {
                                 ResponseData.AdsBean adsBean = response.body().getAds().get(0);
                                 if (adsBean.getAdct() == 4) {
                                     if (baseView != null) {
-                                        baseView.getShowText(adsBean.getAdm(), false);
+                                        baseView.getShowText(adsBean.getAdm(), false, adsBean.getThclkurl(), adsBean.getImgtracking());
                                     }
                                 } else {
                                     if (baseView != null) {
-                                        baseView.getShowText(adsBean.getImgurl(), true);
+                                        baseView.getShowText(adsBean.getImgurl(), true, adsBean.getThclkurl(), adsBean.getImgtracking());
                                     }
                                 }
                             }
@@ -88,6 +91,16 @@ public class MainPresenterImpl<T extends MainView> implements MainPresenter<T> {
     @Override
     public void stopOrStart(boolean isStar) {
         this.isStrart = isStar;
+    }
+
+    @Override
+    public void baoGuang(String adress) {
+        baoGuang.baoGuang(adress);
+    }
+
+    @Override
+    public void dianJi(String adress) {
+        baoGuang.dianJi(adress);
     }
 
     @Override

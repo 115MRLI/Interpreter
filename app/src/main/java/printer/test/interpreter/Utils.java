@@ -123,7 +123,7 @@ public class Utils {
      * @return
      */
     public static String getSDK() {
-        return Build.VERSION.SDK_INT + "";
+        return  android.os.Build.VERSION.RELEASE + "";
     }
     /**
      * 获取运营商名字

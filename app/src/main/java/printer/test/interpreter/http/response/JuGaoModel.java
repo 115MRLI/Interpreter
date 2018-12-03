@@ -1,6 +1,10 @@
 package printer.test.interpreter.http.response;
 
+import android.util.DisplayMetrics;
+import android.view.Display;
+
 import printer.test.interpreter.Utils;
+import printer.test.interpreter.app.App;
 import printer.test.interpreter.http.api.JuGaoApi;
 import printer.test.interpreter.http.api.ServiceGenerator;
 import retrofit2.Call;
@@ -18,7 +22,7 @@ public class JuGaoModel {
         juGaoApi = ServiceGenerator.createServiceFrom(JuGaoApi.class);
     }
     //1dfc8b82ccde162e   banner的测试id
-//    翻译官横幅id：05f71ea09994eca6
+    //    翻译官横幅id：05f71ea09994eca6
 
 
     /**
@@ -38,7 +42,6 @@ public class JuGaoModel {
      * @param <T>
      */
     public <T> void requestAdvertisement(String pkgname, String appname, String ua, String appv, String ip, String brand, String model, String uuid, int pw, int ph, Callback<T> callback) {
-
         Call<T> call = (Call<T>) juGaoApi.requestAdvertisement("05f71ea09994eca6", "1", 640, 100, pkgname, appname, ua, 0, Utils.getSDK(), appv, 1, 4, ip, brand, model, uuid, pw, ph);
         call.enqueue(callback);
     }
