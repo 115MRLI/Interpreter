@@ -129,5 +129,10 @@ public class ResponseData {
         public void setImgtracking(List<String> imgtracking) {
             this.imgtracking = imgtracking;
         }
+
+        @Override
+        public String toString() {
+            return "AdsBean{" + "imgurl='" + imgurl + '\'' + ", admt=" + admt + ", adm='" + adm + '\'' + ", adct=" + adct + ", clickurl='" + clickurl + '\'' + ", thclkurl=" + thclkurl + ", imgtracking=" + imgtracking + '}';
+        }
     }
 }

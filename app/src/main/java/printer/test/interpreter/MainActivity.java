@@ -1,6 +1,8 @@
 package printer.test.interpreter;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,11 +16,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -61,6 +66,8 @@ public class MainActivity extends BaseActivity implements CommonPopupWindow.View
     private List<String> thclkurl;
     private List<String> imgtracking;
 
+    private boolean ispp = true;
+
     @Override
     protected int getLayout() {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -87,7 +94,7 @@ public class MainActivity extends BaseActivity implements CommonPopupWindow.View
             public void run() {
                 super.run();
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(30000);
                     presenter.requestAdvertisement("com.fanyiguan", Utils.changeURLEncoding("翻译官"), finalUa, "1.1.0", Utils.getIP(MainActivity.this), android.os.Build.MANUFACTURER + "", android.os.Build.MODEL, Utils.getIMEI(MainActivity.this), width, heigth);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -159,14 +166,23 @@ public class MainActivity extends BaseActivity implements CommonPopupWindow.View
         if (popupWindow != null && popupWindow.isShowing()) return;
         popupWindow = new CommonPopupWindow.Builder(this).setView(R.layout.web_layout).setWidthAndHeight(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).setViewOnclickListener(this).create();
         popupWindow.showAsDropDown(view, 0, -(popupWindow.getHeight() + view.getMeasuredHeight()));
+        popupWindow.setOnDismissListener(onDismissListener);
 
     }
+    //向上弹出
+    public void showUpPop2(View view) {
+        if (popupWindow != null && popupWindow.isShowing()) return;
+        popupWindow = new CommonPopupWindow.Builder(this).setView(R.layout.web_layout).setWidthAndHeight(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT).setViewOnclickListener(this).create();
+        popupWindow.showAsDropDown(view, 0, -(popupWindow.getHeight() + view.getMeasuredHeight()));
+        popupWindow.setOnDismissListener(onDismissListener);
 
+    }
     //向上弹出
     public void showUpPopPic(View view) {
         if (popupWindow != null && popupWindow.isShowing()) return;
         popupWindow = new CommonPopupWindow.Builder(this).setView(R.layout.pic_layout).setWidthAndHeight(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).setViewOnclickListener(this).create();
         popupWindow.showAsDropDown(view, 0, -(popupWindow.getHeight() + view.getMeasuredHeight()));
+        popupWindow.setOnDismissListener(onDismissListener);
 
     }
 
@@ -213,7 +229,7 @@ public class MainActivity extends BaseActivity implements CommonPopupWindow.View
                 });
                 break;
             case R.layout.pic_layout:
-                ImageView pic = view.findViewById(R.id.show_context);
+                ImageView pic = view.findViewById(R.id.pic_show);
                 RequestOptions requestOptions = new RequestOptions();
                 requestOptions.error(R.mipmap.jugao);//异常时候显示的图片
                 requestOptions.placeholder(R.mipmap.jugao);//加载成功前显示的图片
@@ -224,8 +240,14 @@ public class MainActivity extends BaseActivity implements CommonPopupWindow.View
                     @Override
                     public void onClick(View v) {
                         popupWindow.dismiss();
+                    }
+                });
+                view.findViewById(R.id.pic_line).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
                         for (int i = 0; i < thclkurl.size(); i++) {
-                            presenter.dianJi(thclkurl.get(i)+"/");
+                            presenter.dianJi(thclkurl.get(i));
+                            Log.e("adress", "pic   " + thclkurl.get(i));
                         }
                     }
                 });
@@ -234,25 +256,32 @@ public class MainActivity extends BaseActivity implements CommonPopupWindow.View
                 WebView webView = view.findViewById(R.id.show_context);
                 WebSettings settings = webView.getSettings();
                 settings.setJavaScriptEnabled(true);
-                settings.setDomStorageEnabled(true);
-                settings.setUseWideViewPort(true);
-                settings.setLoadWithOverviewMode(true);
-                webView.setWebViewClient(new WebViewClient());
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.TEXT_AUTOSIZING);
-                } else {
-                    settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
-                }
-                webView.loadData(contexturl, "text/html;charset=utf-8", "utf-8");
+                settings.setAppCacheEnabled(false);
+                settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+                webView.setWebViewClient(new WebViewClient(){
+                    @Override
+                    public boolean shouldOverrideUrlLoading(WebView view, String  url) {
+                        for (int i = 0; i < thclkurl.size(); i++) {
+                            presenter.dianJi(thclkurl.get(i));
+                            Log.e("adress", "web   " + thclkurl.get(i));
+                        }
+                        Intent intent= new Intent();
+                        intent.setAction("android.intent.action.VIEW");
+                        Uri content_url = Uri.parse(url);
+                        intent.setData(content_url);
+                        startActivity(intent);
+                        return true;
+                    }
+                });
+                webView.loadDataWithBaseURL(null, contexturl, "text/html;charset=utf-8", "utf-8", null);
                 view.findViewById(R.id.close).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         popupWindow.dismiss();
-                        for (int i = 0; i < thclkurl.size(); i++) {
-                            presenter.dianJi(thclkurl.get(i)+"/");
-                        }
+
                     }
                 });
+
                 break;
         }
     }
@@ -262,10 +291,12 @@ public class MainActivity extends BaseActivity implements CommonPopupWindow.View
         this.thclkurl = thclkurl;
         this.imgtracking = imgtracking;
         for (int i = 0; i < imgtracking.size(); i++) {
-            presenter.baoGuang(imgtracking.get(i)+"/");
+            presenter.baoGuang(imgtracking.get(i));
         }
         contexturl = context;
+        Log.e("contexturl","contexturl :"+ contexturl+ "isPic  :"  +isPic);
         if (isPic == true) {
+
             showUpPopPic(top);
         } else {
             showUpPop(top);
@@ -275,11 +306,24 @@ public class MainActivity extends BaseActivity implements CommonPopupWindow.View
 
     @Override
     public void addResNumber(int number) {
-        initEvent();
+        if (ispp == true) {
+            initEvent();
+        }
+
     }
 
     @Override
     public void addSuccessNumber(int number) {
-
+        ispp = false;
     }
+
+    /**
+     * pop消失监听
+     */
+    private PopupWindow.OnDismissListener onDismissListener = new PopupWindow.OnDismissListener() {
+        @Override
+        public void onDismiss() {
+            initEvent();
+        }
+    };
 }

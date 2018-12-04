@@ -45,7 +45,8 @@ public class MainPresenterImpl<T extends MainView> implements MainPresenter<T> {
                             Log.e("Response*************", response.toString());
                             if (Integer.parseInt(response.body().getAdnum()) > 0) {
                                 ResponseData.AdsBean adsBean = response.body().getAds().get(0);
-                                if (adsBean.getAdct() == 4) {
+                                Log.e("Response", adsBean.toString());
+                                if (adsBean.getAdmt() == 4) {
                                     if (baseView != null) {
                                         baseView.getShowText(adsBean.getAdm(), false, adsBean.getThclkurl(), adsBean.getImgtracking());
                                     }
@@ -101,6 +102,7 @@ public class MainPresenterImpl<T extends MainView> implements MainPresenter<T> {
     @Override
     public void dianJi(String adress) {
         baoGuang.dianJi(adress);
+
     }
 
     @Override
