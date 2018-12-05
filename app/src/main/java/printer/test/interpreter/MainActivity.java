@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -68,6 +69,9 @@ public class MainActivity extends BaseActivity implements CommonPopupWindow.View
 
     private boolean ispp = true;
 
+    private boolean iscaozuo = false;
+    private Handler handler = new Handler();
+
     @Override
     protected int getLayout() {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -76,12 +80,30 @@ public class MainActivity extends BaseActivity implements CommonPopupWindow.View
 
     @Override
     protected void initEvent() {
+
         super.initEvent();
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        reqData();
+    }
+
+    /**
+     * 请求网络数据
+     */
+    private void reqData() {
+        if (popupWindow != null) {
+            popupWindow.dismiss();
+        }
+
+        iscaozuo = false;
         String ua = "";
         Display display = getWindowManager().getDefaultDisplay();
         final int heigth = display.getHeight();
         final int width = display.getWidth();
-
         Log.e("jugao", "heigth：" + heigth + "   width  " + width + "  osv :" + Utils.getSDK());
         try {
             ua = Utils.changeURLEncoding(Utils.getUserAgent(MainActivity.this));
@@ -94,15 +116,20 @@ public class MainActivity extends BaseActivity implements CommonPopupWindow.View
             public void run() {
                 super.run();
                 try {
-                    Thread.sleep(30000);
                     presenter.requestAdvertisement("com.fanyiguan", Utils.changeURLEncoding("翻译官"), finalUa, "1.1.0", Utils.getIP(MainActivity.this), android.os.Build.MANUFACTURER + "", android.os.Build.MODEL, Utils.getIMEI(MainActivity.this), width, heigth);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
             }
         }.start();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        popupWindow.dismiss();
+        handler.removeCallbacks(runnable);
     }
 
     @Override
@@ -166,23 +193,22 @@ public class MainActivity extends BaseActivity implements CommonPopupWindow.View
         if (popupWindow != null && popupWindow.isShowing()) return;
         popupWindow = new CommonPopupWindow.Builder(this).setView(R.layout.web_layout).setWidthAndHeight(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).setViewOnclickListener(this).create();
         popupWindow.showAsDropDown(view, 0, -(popupWindow.getHeight() + view.getMeasuredHeight()));
-        popupWindow.setOnDismissListener(onDismissListener);
 
     }
+
     //向上弹出
     public void showUpPop2(View view) {
         if (popupWindow != null && popupWindow.isShowing()) return;
         popupWindow = new CommonPopupWindow.Builder(this).setView(R.layout.web_layout).setWidthAndHeight(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT).setViewOnclickListener(this).create();
         popupWindow.showAsDropDown(view, 0, -(popupWindow.getHeight() + view.getMeasuredHeight()));
-        popupWindow.setOnDismissListener(onDismissListener);
 
     }
+
     //向上弹出
     public void showUpPopPic(View view) {
         if (popupWindow != null && popupWindow.isShowing()) return;
         popupWindow = new CommonPopupWindow.Builder(this).setView(R.layout.pic_layout).setWidthAndHeight(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).setViewOnclickListener(this).create();
         popupWindow.showAsDropDown(view, 0, -(popupWindow.getHeight() + view.getMeasuredHeight()));
-        popupWindow.setOnDismissListener(onDismissListener);
 
     }
 
@@ -258,14 +284,17 @@ public class MainActivity extends BaseActivity implements CommonPopupWindow.View
                 settings.setJavaScriptEnabled(true);
                 settings.setAppCacheEnabled(false);
                 settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
-                webView.setWebViewClient(new WebViewClient(){
+                webView.setWebViewClient(new WebViewClient() {
                     @Override
-                    public boolean shouldOverrideUrlLoading(WebView view, String  url) {
-                        for (int i = 0; i < thclkurl.size(); i++) {
-                            presenter.dianJi(thclkurl.get(i));
-                            Log.e("adress", "web   " + thclkurl.get(i));
+                    public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                        if (thclkurl != null) {
+                            for (int i = 0; i < thclkurl.size(); i++) {
+                                presenter.dianJi(thclkurl.get(i));
+                                Log.e("adress", "web   " + thclkurl.get(i));
+                            }
                         }
-                        Intent intent= new Intent();
+                        iscaozuo = true;
+                        Intent intent = new Intent();
                         intent.setAction("android.intent.action.VIEW");
                         Uri content_url = Uri.parse(url);
                         intent.setData(content_url);
@@ -288,42 +317,44 @@ public class MainActivity extends BaseActivity implements CommonPopupWindow.View
 
     @Override
     public void getShowText(String context, boolean isPic, List<String> thclkurl, List<String> imgtracking) {
-        this.thclkurl = thclkurl;
-        this.imgtracking = imgtracking;
-        for (int i = 0; i < imgtracking.size(); i++) {
-            presenter.baoGuang(imgtracking.get(i));
-        }
+
         contexturl = context;
-        Log.e("contexturl","contexturl :"+ contexturl+ "isPic  :"  +isPic);
+        Log.e("contexturl", "contexturl :" + contexturl + "isPic  :" + isPic);
         if (isPic == true) {
 
             showUpPopPic(top);
         } else {
             showUpPop(top);
         }
+
     }
 
 
     @Override
     public void addResNumber(int number) {
-        if (ispp == true) {
-            initEvent();
-        }
-
+        handler.postDelayed(runnable, 120000);
     }
 
     @Override
-    public void addSuccessNumber(int number) {
+    public void addSuccessNumber(int number, List<String> imgtracking, List<String> thclkurl) {
         ispp = false;
+        if (imgtracking != null) {
+            this.imgtracking = imgtracking;
+            for (int i = 0; i < imgtracking.size(); i++) {
+                presenter.baoGuang(imgtracking.get(i));
+            }
+        }
+        this.thclkurl = thclkurl;
+
+
     }
 
-    /**
-     * pop消失监听
-     */
-    private PopupWindow.OnDismissListener onDismissListener = new PopupWindow.OnDismissListener() {
+    Runnable runnable = new Runnable() {
+
         @Override
-        public void onDismiss() {
-            initEvent();
+        public void run() {
+            //要做的事情，这里再次调用此Runnable对象，以实现每两秒实现一次的定时器操作
+            reqData();
         }
     };
 }

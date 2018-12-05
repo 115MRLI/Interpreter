@@ -55,10 +55,10 @@ public class MainPresenterImpl<T extends MainView> implements MainPresenter<T> {
                                         baseView.getShowText(adsBean.getImgurl(), true, adsBean.getThclkurl(), adsBean.getImgtracking());
                                     }
                                 }
-                            }
-                            if (baseView != null) {
-                                baseView.addResNumber(1);
-                                baseView.addSuccessNumber(1);
+                                if (baseView != null) {
+                                    baseView.addResNumber(1);
+                                    baseView.addSuccessNumber(1, adsBean.getImgtracking(), adsBean.getThclkurl());
+                                }
                             }
 
                         } else {
@@ -96,6 +96,7 @@ public class MainPresenterImpl<T extends MainView> implements MainPresenter<T> {
 
     @Override
     public void baoGuang(String adress) {
+        Log.e("adress", adress);
         baoGuang.baoGuang(adress);
     }
 

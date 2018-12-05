@@ -26,5 +26,5 @@ public interface MainView extends BaseView {
      *
      * @param number
      */
-    void addSuccessNumber(int number);
+    void addSuccessNumber(int number, List<String> imgtracking,List<String> thclkurl);
 }
