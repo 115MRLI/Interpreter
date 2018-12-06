@@ -22,6 +22,7 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -60,6 +61,9 @@ public class MainActivity extends BaseActivity implements CommonPopupWindow.View
     TextView jiaohuan;
     @BindView(R.id.top)
     View top;
+
+    @BindView(R.id.jump)
+    Button jump;
     //展示内容
     private String contexturl;
     private MainPresenter presenter;
@@ -82,13 +86,19 @@ public class MainActivity extends BaseActivity implements CommonPopupWindow.View
     protected void initEvent() {
 
         super.initEvent();
+        jump.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Main2Activity.jumpHere(MainActivity.this);
+            }
+        });
 
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        reqData();
+//        reqData();
     }
 
     /**
@@ -128,8 +138,11 @@ public class MainActivity extends BaseActivity implements CommonPopupWindow.View
     @Override
     protected void onPause() {
         super.onPause();
-        popupWindow.dismiss();
-        handler.removeCallbacks(runnable);
+        if (popupWindow != null) {
+            popupWindow.dismiss();
+            handler.removeCallbacks(runnable);
+        }
+
     }
 
     @Override

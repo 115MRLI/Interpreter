@@ -100,8 +100,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:background="@drawable/bt_set"
-            android:gravity="center_vertical"
             android:clickable="true"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <ImageView
@@ -137,9 +137,9 @@
             android:layout_margin="3dp"
             android:layout_weight="1"
             android:background="@drawable/bt_set"
+            android:clickable="true"
             android:gravity="center"
             android:text="翻译"
-            android:clickable="true"
             android:textColor="#333"
             android:textSize="23dp" />
 
@@ -150,8 +150,8 @@
             android:layout_margin="3dp"
             android:layout_weight="1"
             android:background="@drawable/bt_set"
-            android:gravity="center"
             android:clickable="true"
+            android:gravity="center"
             android:text="交换语言翻译"
             android:textColor="#333"
             android:textSize="23dp" />
@@ -170,9 +170,17 @@
         android:textColor="#333"
         android:textColorHint="#a3a3a3"
         android:textSize="23dp" />
+
     <View
         android:id="@+id/top"
-        android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
-        android:layout_height="1dp"/>
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="true" />
+
+    <Button
+        android:id="@+id/jump"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="控制台" />
 </RelativeLayout>
