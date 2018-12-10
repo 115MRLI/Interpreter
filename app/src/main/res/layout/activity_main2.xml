@@ -3,9 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-
-    <LinearLayout
+    <View
         android:id="@+id/top"
+        android:layout_width="match_parent"
+        android:layout_height="1dp" />
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -132,6 +134,7 @@
             android:orientation="horizontal">
 
             <CheckBox
+                android:id="@+id/book"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="开平-有声听书"
@@ -280,7 +283,7 @@
             android:textSize="11.5dp" />
 
         <EditText
-            android:id="@+id/ip_number"
+            android:id="@+id/exposure_number"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
@@ -312,6 +315,7 @@
                 android:layout_weight="0.5" />
 
             <TextView
+                android:id="@+id/exposure_appear"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
@@ -344,7 +348,7 @@
                 android:layout_weight="1" />
 
             <TextView
-                android:id="@+id/success_number"
+                android:id="@+id/success_exposure_appear"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
@@ -383,6 +387,7 @@
                 android:layout_weight="0.5" />
 
             <TextView
+                android:id="@+id/click_request"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
@@ -415,7 +420,7 @@
                 android:layout_weight="1" />
 
             <TextView
-                android:id="@+id/success_number"
+                android:id="@+id/success_click_request"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
@@ -442,6 +447,7 @@
             android:textSize="11.5dp" />
 
         <TextView
+            android:id="@+id/phone_model"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="MI8 SE"
@@ -450,6 +456,7 @@
             android:textStyle="normal" />
 
         <TextView
+            android:id="@+id/phone_firim"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
@@ -466,7 +473,7 @@
         android:layout_weight="1" />
 
     <Button
-        android:id="@+id/jump"
+        android:id="@+id/star_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
