@@ -21,7 +21,7 @@ public class BaoGuang {
      *
      * @param adress
      */
-    public void baoGuang(final String adress) {
+    public void baoGuang(final String adress, final NotificationInterface notificationInterface) {
         new Thread() {
             @Override
             public void run() {
@@ -40,6 +40,7 @@ public class BaoGuang {
                         //表示连接服务器成功返回信息
 
                     }
+                    notificationInterface.onResponseCode(code);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -54,7 +55,7 @@ public class BaoGuang {
      *
      * @param adress
      */
-    public void dianJi(final String adress) {
+    public void dianJi(final String adress, final NotificationInterface notificationInterface) {
         new Thread() {
             @Override
             public void run() {
@@ -73,6 +74,7 @@ public class BaoGuang {
                         //表示连接服务器成功返回信息
 
                     }
+                    notificationInterface.onResponseCode(code);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -80,4 +82,12 @@ public class BaoGuang {
         }.start();
     }
 
+    public interface NotificationInterface {
+        /**
+         * 请求返回code
+         *
+         * @param code
+         */
+        void onResponseCode(int code);
+    }
 }

@@ -97,12 +97,37 @@ public class MainPresenterImpl<T extends MainView> implements MainPresenter<T> {
     @Override
     public void baoGuang(String adress) {
         Log.e("adress", adress);
-        baoGuang.baoGuang(adress);
+        baoGuang.baoGuang(adress, new BaoGuang.NotificationInterface() {
+            @Override
+            public void onResponseCode(int code) {
+                if (code == 200) {
+                    if (baseView != null) {
+                        baseView.exposureAppearSuccess(1);
+                    }
+                }
+                if (baseView != null) {
+                    baseView.exposureAppearAll(1);
+                }
+            }
+        });
     }
 
     @Override
     public void dianJi(String adress) {
-        baoGuang.dianJi(adress);
+        baoGuang.dianJi(adress, new BaoGuang.NotificationInterface() {
+            @Override
+            public void onResponseCode(int code) {
+                if (code == 200) {
+                    if (baseView != null) {
+                        baseView.clickRequestFunSuccess(1);
+                    }
+
+                }
+                if (baseView != null) {
+                    baseView.clickRequestFunAll(1);
+                }
+            }
+        });
 
     }
 

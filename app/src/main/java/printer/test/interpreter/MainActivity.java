@@ -204,8 +204,8 @@ public class MainActivity extends BaseActivity implements CommonPopupWindow.View
     //向上弹出
     public void showUpPop(View view) {
         if (popupWindow != null && popupWindow.isShowing()) return;
-        popupWindow = new CommonPopupWindow.Builder(this).setView(R.layout.web_layout).setWidthAndHeight(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).setViewOnclickListener(this).create();
-        popupWindow.showAsDropDown(view, 0, -(popupWindow.getHeight() + view.getMeasuredHeight()));
+        popupWindow = new CommonPopupWindow.Builder(this).setView(R.layout.web_layout).setWidthAndHeight(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).setViewOnclickListener(this).setOutsideTouchable(true).create();
+        popupWindow.showAsDropDown(view);
 
     }
 
@@ -370,4 +370,24 @@ public class MainActivity extends BaseActivity implements CommonPopupWindow.View
             reqData();
         }
     };
+
+    @Override
+    public void clickRequestFunAll(int number) {
+
+    }
+
+    @Override
+    public void clickRequestFunSuccess(int number) {
+
+    }
+
+    @Override
+    public void exposureAppearAll(int number) {
+
+    }
+
+    @Override
+    public void exposureAppearSuccess(int number) {
+
+    }
 }

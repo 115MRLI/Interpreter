@@ -12,7 +12,7 @@ public interface MainView extends BaseView {
      * @param context 要展示内容
      * @param isPic   是否是图片
      */
-    void getShowText(String context, boolean isPic,List<String> thclkurl,List<String> imgtracking);
+    void getShowText(String context, boolean isPic, List<String> thclkurl, List<String> imgtracking);
 
     /**
      * 添加请求总次数
@@ -26,5 +26,33 @@ public interface MainView extends BaseView {
      *
      * @param number
      */
-    void addSuccessNumber(int number, List<String> imgtracking,List<String> thclkurl);
+    void addSuccessNumber(int number, List<String> imgtracking, List<String> thclkurl);
+
+    /**
+     * 点击上报的总次数
+     *
+     * @param number
+     */
+    void clickRequestFunAll(int number);
+
+    /**
+     * 点击上报成功次数
+     *
+     * @param number
+     */
+    void clickRequestFunSuccess(int number);
+
+    /**
+     * 曝光上报次数
+     *
+     * @param number
+     */
+    void exposureAppearAll(int number);
+
+    /**
+     * 曝光上报成功次数
+     *
+     * @param number
+     */
+    void exposureAppearSuccess(int number);
 }
