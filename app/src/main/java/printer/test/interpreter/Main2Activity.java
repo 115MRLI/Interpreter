@@ -4,9 +4,8 @@ package printer.test.interpreter;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.CountDownTimer;
 import android.os.Handler;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
@@ -25,6 +24,8 @@ import com.bumptech.glide.request.RequestOptions;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.BindView;
 import printer.test.interpreter.app.App;
@@ -52,7 +53,7 @@ public class Main2Activity extends BaseActivity implements CommonPopupWindow.Vie
     //间隔时间
     @BindView(R.id.once_time)
     EditText onceTime;
-    //曝光次数控制
+    //点击上报次数控制
     @BindView(R.id.exposure_number)
     EditText exposureNumber;
     //曝光上报的次数
@@ -79,26 +80,10 @@ public class Main2Activity extends BaseActivity implements CommonPopupWindow.Vie
     //广告位
     @BindView(R.id.top)
     View top;
+    //跳转
+    @BindView(R.id.jump)
+    TextView jump;
 
-    //历史记录，请求总次数
-    @BindView(R.id.all_n)
-    TextView all_n;
-
-    //历史记录，请求成功次数
-    @BindView(R.id.success_n)
-    TextView success_n;
-    //历史记录，曝光上报总次数
-    @BindView(R.id.all_n_e)
-    TextView all_n_e;
-    //历史记录，曝光上报成功次数
-    @BindView(R.id.success_n_exx)
-    TextView success_n_e;
-    //历史记录，点击上报总次数
-    @BindView(R.id.all_n_c)
-    TextView all_n_c;
-    //历史记录，点击上报成功次数
-    @BindView(R.id.success_n_c)
-    TextView success_n_c;
 
     private Main2Activity contetxt;
 
@@ -107,6 +92,7 @@ public class Main2Activity extends BaseActivity implements CommonPopupWindow.Vie
     private List<String> thclkurl;
     private List<String> imgtracking;
     private Handler handler = new Handler();
+    private Handler Timehandler = new Handler();
 
     private CommonPopupWindow popupWindow;
     //展示内容
@@ -115,7 +101,7 @@ public class Main2Activity extends BaseActivity implements CommonPopupWindow.Vie
     private boolean iscaozuo = false;
 
     private boolean isClick = false;
-    private int exposureNumber_o, onceNumber_o, number_o, onceTime_o;
+    private int exposureNumber_o, onceNumber_o, onceTime_o;
 
     @Override
     protected int getLayout() {
@@ -126,18 +112,7 @@ public class Main2Activity extends BaseActivity implements CommonPopupWindow.Vie
     protected void initView() {
         super.initView();
         contetxt = this;
-        //历史记录，请求总次数
-        all_n.setText(OperationUtils.getPartnerId() + "");
-        //历史记录，请求成功次数
-        success_n.setText(OperationUtils.getId() + "");
-        //历史记录，曝光上报总次数
-        all_n_e.setText(OperationUtils.getUserName() +"");
-        //历史记录，曝光上报成功次数
-        success_n_e.setText(OperationUtils.getLanguage()+"");
-        //历史记录，点击上报总次数
-        all_n_c.setText(OperationUtils.getPassword()+"");
-        //历史记录，点击上报成功次数
-        success_n_c.setText(OperationUtils.getRoleId()+"");
+
     }
 
     @Override
@@ -150,8 +125,14 @@ public class Main2Activity extends BaseActivity implements CommonPopupWindow.Vie
         phoneFirim.setText(android.os.Build.MANUFACTURER + "");
         exposureNumber.setText(10 + "");
         onceNumber.setText(40 + "");
-        number.setText(20 + "");
         onceTime.setText(2 + "");
+        //跳转
+        jump.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Main3Activity.jumpHere(contetxt);
+            }
+        });
         //开始请求
         starBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -160,7 +141,7 @@ public class Main2Activity extends BaseActivity implements CommonPopupWindow.Vie
                     starBtn.setText("开始");
                     if (popupWindow != null) {
                         popupWindow.dismiss();
-                        handler.removeCallbacks(runnable);
+
                     }
                     OperationUtils.saveId(OperationUtils.getId() + Integer.parseInt(successNumber.getText().toString()));
                     OperationUtils.savePartnerId(OperationUtils.getPartnerId() + Integer.parseInt(all.getText().toString()));
@@ -168,31 +149,15 @@ public class Main2Activity extends BaseActivity implements CommonPopupWindow.Vie
                     OperationUtils.saveRoleId(OperationUtils.getRoleId() + Integer.parseInt(successClickRequest.getText().toString()));
                     OperationUtils.saveUserName(OperationUtils.getUserName() + Integer.parseInt(exposureAppear.getText().toString()));
                     OperationUtils.saveLanguage(OperationUtils.getLanguage() + Integer.parseInt(successExposureAppear.getText().toString()));
-                    successNumber.setText("0");
-                    all.setText("0");
-                    clickRequest.setText("0");
-                    successClickRequest.setText("0");
-                    exposureAppear.setText("0");
-                    successExposureAppear.setText("0");
-                    //历史记录，请求总次数
-                    all_n.setText(OperationUtils.getPartnerId() + "");
-                    //历史记录，请求成功次数
-                    success_n.setText(OperationUtils.getId() + "");
-                    //历史记录，曝光上报总次数
-                    all_n_e.setText(OperationUtils.getUserName() +"");
-                    //历史记录，曝光上报成功次数
-                    success_n_e.setText(OperationUtils.getLanguage()+"");
-                    //历史记录，点击上报总次数
-                    all_n_c.setText(OperationUtils.getPassword()+"");
-                    //历史记录，点击上报成功次数
-                    success_n_c.setText(OperationUtils.getRoleId()+"");
+                    Timehandler.removeCallbacks(Timerunnable);
+                    handler.removeCallbacks(runnable);
                 } else {
                     starBtn.setText("停止");
                     exposureNumber_o = Integer.parseInt(exposureNumber.getText().toString());
                     onceNumber_o = Integer.parseInt(onceNumber.getText().toString());
-                    number_o = Integer.parseInt(number.getText().toString());
                     onceTime_o = Integer.parseInt(onceTime.getText().toString());
-                    reqData();
+                    handler.postDelayed(runnable, 500);
+                    Timehandler.postDelayed(Timerunnable, onceTime_o*1000);
                 }
                 isClick = !isClick;
             }
@@ -203,6 +168,8 @@ public class Main2Activity extends BaseActivity implements CommonPopupWindow.Vie
     protected void onDestroy() {
         super.onDestroy();
         presenter.detachView();
+        Timehandler.removeCallbacks(Timerunnable);
+        handler.removeCallbacks(runnable);
     }
 
     @Override
@@ -228,7 +195,6 @@ public class Main2Activity extends BaseActivity implements CommonPopupWindow.Vie
         all.setText(allnumber + "");
         if (onceNumber_o == 1) {
             if (popupWindow != null) {
-                starBtn.setText("开始");
                 popupWindow.dismiss();
                 handler.removeCallbacks(runnable);
                 OperationUtils.saveId(OperationUtils.getId() + Integer.parseInt(successNumber.getText().toString()));
@@ -237,29 +203,11 @@ public class Main2Activity extends BaseActivity implements CommonPopupWindow.Vie
                 OperationUtils.saveRoleId(OperationUtils.getRoleId() + Integer.parseInt(successClickRequest.getText().toString()));
                 OperationUtils.saveUserName(OperationUtils.getUserName() + Integer.parseInt(exposureAppear.getText().toString()));
                 OperationUtils.saveLanguage(OperationUtils.getLanguage() + Integer.parseInt(successExposureAppear.getText().toString()));
-                successNumber.setText("0");
-                all.setText("0");
-                clickRequest.setText("0");
-                successClickRequest.setText("0");
-                exposureAppear.setText("0");
-                successExposureAppear.setText("0");
-                //历史记录，请求总次数
-                all_n.setText(OperationUtils.getPartnerId() + "");
-                //历史记录，请求成功次数
-                success_n.setText(OperationUtils.getId() + "");
-                //历史记录，曝光上报总次数
-                all_n_e.setText(OperationUtils.getUserName() +"");
-                //历史记录，曝光上报成功次数
-                success_n_e.setText(OperationUtils.getLanguage()+"");
-                //历史记录，点击上报总次数
-                all_n_c.setText(OperationUtils.getPassword()+"");
-                //历史记录，点击上报成功次数
-                success_n_c.setText(OperationUtils.getRoleId()+"");
 
             }
             return;
         }
-        handler.postDelayed(runnable, onceTime_o * 1000);
+        handler.postDelayed(runnable, 500);
         onceNumber_o = onceNumber_o - 1;
     }
 
@@ -267,25 +215,13 @@ public class Main2Activity extends BaseActivity implements CommonPopupWindow.Vie
     public void addSuccessNumber(int number, List<String> imgtracking, List<String> thclkurl) {
         int allnumber = Integer.parseInt(successNumber.getText().toString()) + number;
         successNumber.setText(allnumber + "");
-        if (number_o > 0) {
-            if (imgtracking != null) {
-                this.imgtracking = imgtracking;
-                for (int i = 0; i < imgtracking.size(); i++) {
-                    presenter.baoGuang(imgtracking.get(i));
-                }
+        if (imgtracking != null) {
+            this.imgtracking = imgtracking;
+            for (int i = 0; i < imgtracking.size(); i++) {
+                presenter.baoGuang(imgtracking.get(i), thclkurl);
             }
-            number_o = number_o - 1;
         }
 
-        if (exposureNumber_o > 0) {
-            if (thclkurl != null) {
-                this.thclkurl = thclkurl;
-                for (int i = 0; i < thclkurl.size(); i++) {
-                    presenter.dianJi(thclkurl.get(i));
-                }
-            }
-            exposureNumber_o = exposureNumber_o - 1;
-        }
 
     }
 
@@ -309,9 +245,17 @@ public class Main2Activity extends BaseActivity implements CommonPopupWindow.Vie
     }
 
     @Override
-    public void exposureAppearSuccess(int number) {
+    public void exposureAppearSuccess(int number, List<String> thclkurl) {
         int allnumber = Integer.parseInt(successExposureAppear.getText().toString()) + number;
         successExposureAppear.setText(allnumber + "");
+        if (exposureNumber_o > 0) {
+            if (thclkurl != null) {
+                for (int i = 0; i < thclkurl.size(); i++) {
+                    presenter.dianJi(thclkurl.get(i));
+                }
+            }
+            exposureNumber_o = exposureNumber_o - 1;
+        }
     }
 
     @Override
@@ -350,18 +294,18 @@ public class Main2Activity extends BaseActivity implements CommonPopupWindow.Vie
                 webView.setWebViewClient(new WebViewClient() {
                     @Override
                     public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                        if (thclkurl != null) {
-                            for (int i = 0; i < thclkurl.size(); i++) {
-                                presenter.dianJi(thclkurl.get(i));
-                                Log.e("adress", "web   " + thclkurl.get(i));
-                            }
-                        }
-                        iscaozuo = true;
-                        Intent intent = new Intent();
-                        intent.setAction("android.intent.action.VIEW");
-                        Uri content_url = Uri.parse(url);
-                        intent.setData(content_url);
-                        startActivity(intent);
+//                        if (thclkurl != null) {
+//                            for (int i = 0; i < thclkurl.size(); i++) {
+//                                presenter.dianJi(thclkurl.get(i));
+//                                Log.e("adress", "web   " + thclkurl.get(i));
+//                            }
+//                        }
+//                        iscaozuo = true;
+//                        Intent intent = new Intent();
+//                        intent.setAction("android.intent.action.VIEW");
+//                        Uri content_url = Uri.parse(url);
+//                        intent.setData(content_url);
+//                        startActivity(intent);
                         return true;
                     }
                 });
@@ -394,10 +338,6 @@ public class Main2Activity extends BaseActivity implements CommonPopupWindow.Vie
         ipaddress.setText(Utils.getIP(contetxt));
         phoneModel.setText(android.os.Build.MODEL + "");
         phoneFirim.setText(android.os.Build.MANUFACTURER + "");
-        if (popupWindow != null) {
-            popupWindow.dismiss();
-        }
-
         String ua = "";
         Display display = getWindowManager().getDefaultDisplay();
         final int heigth = display.getHeight();
@@ -414,7 +354,6 @@ public class Main2Activity extends BaseActivity implements CommonPopupWindow.Vie
                 super.run();
                 try {
                     presenter.requestAdvertisement("com.fanyiguan", Utils.changeURLEncoding("翻译官"), finalUa, "1.1.0", Utils.getIP(contetxt), android.os.Build.MANUFACTURER + "", android.os.Build.MODEL, Utils.getIMEI(contetxt), width, heigth);
-
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
@@ -446,4 +385,22 @@ public class Main2Activity extends BaseActivity implements CommonPopupWindow.Vie
             reqData();
         }
     };
+
+    Runnable Timerunnable = new Runnable() {
+
+        @Override
+        public void run() {
+            //要做的事情，这里再次调用此Runnable对象，以实现每两秒实现一次的定时器操作
+            startReqDta();
+        }
+    };
+
+
+    private void startReqDta() {
+        exposureNumber_o = Integer.parseInt(exposureNumber.getText().toString());
+        onceNumber_o = Integer.parseInt(onceNumber.getText().toString());
+        onceTime_o = Integer.parseInt(onceTime.getText().toString());
+        handler.postDelayed(runnable, 500);
+        Timehandler.postDelayed(Timerunnable, onceTime_o*1000);
+    }
 }

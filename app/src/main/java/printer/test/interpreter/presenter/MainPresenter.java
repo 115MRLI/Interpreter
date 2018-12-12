@@ -1,6 +1,8 @@
 package printer.test.interpreter.presenter;
 
 
+import java.util.List;
+
 import printer.test.interpreter.base.BasePresenter;
 import printer.test.interpreter.base.BaseView;
 
@@ -33,7 +35,7 @@ public interface MainPresenter<T extends BaseView> extends BasePresenter<T> {
      *
      * @param adress
      */
-    void baoGuang(String adress);
+    void baoGuang(String adress, List<String> thclkurl);
 
     /**
      * 点击

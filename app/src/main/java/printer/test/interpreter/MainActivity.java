@@ -354,7 +354,7 @@ public class MainActivity extends BaseActivity implements CommonPopupWindow.View
         if (imgtracking != null) {
             this.imgtracking = imgtracking;
             for (int i = 0; i < imgtracking.size(); i++) {
-                presenter.baoGuang(imgtracking.get(i));
+                presenter.baoGuang(imgtracking.get(i),thclkurl);
             }
         }
         this.thclkurl = thclkurl;
@@ -387,7 +387,7 @@ public class MainActivity extends BaseActivity implements CommonPopupWindow.View
     }
 
     @Override
-    public void exposureAppearSuccess(int number) {
+    public void exposureAppearSuccess(int number, List<String> thclkurl) {
 
     }
 }

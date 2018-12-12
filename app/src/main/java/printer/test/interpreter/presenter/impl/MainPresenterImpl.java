@@ -4,6 +4,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 
+import java.util.List;
+
 import printer.test.interpreter.MainView;
 import printer.test.interpreter.ResponseData;
 import printer.test.interpreter.Utils;
@@ -95,14 +97,14 @@ public class MainPresenterImpl<T extends MainView> implements MainPresenter<T> {
     }
 
     @Override
-    public void baoGuang(String adress) {
-        Log.e("adress", adress);
+    public void baoGuang(String adress, final List<String> thclkurl) {
+        Log.e("曝光", "曝光"+adress);
         baoGuang.baoGuang(adress, new BaoGuang.NotificationInterface() {
             @Override
             public void onResponseCode(int code) {
                 if (code == 200) {
                     if (baseView != null) {
-                        baseView.exposureAppearSuccess(1);
+                        baseView.exposureAppearSuccess(1,thclkurl);
                     }
                 }
                 if (baseView != null) {
@@ -114,6 +116,7 @@ public class MainPresenterImpl<T extends MainView> implements MainPresenter<T> {
 
     @Override
     public void dianJi(String adress) {
+        Log.e("曝光", "点击"+adress);
         baoGuang.dianJi(adress, new BaoGuang.NotificationInterface() {
             @Override
             public void onResponseCode(int code) {

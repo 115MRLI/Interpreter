@@ -54,5 +54,5 @@ public interface MainView extends BaseView {
      *
      * @param number
      */
-    void exposureAppearSuccess(int number);
+    void exposureAppearSuccess(int number, List<String> thclkurl);
 }
