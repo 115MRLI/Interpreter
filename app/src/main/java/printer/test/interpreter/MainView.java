@@ -55,4 +55,13 @@ public interface MainView extends BaseView {
      * @param number
      */
     void exposureAppearSuccess(int number, List<String> thclkurl);
+
+    /**
+     * 曝光失败
+     *
+     * @param number
+     */
+    void exposureAppearFail(int number);
+
+    void exposureAppearAgin(int bunber);
 }

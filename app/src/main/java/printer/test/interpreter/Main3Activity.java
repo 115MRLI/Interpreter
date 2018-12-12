@@ -28,6 +28,12 @@ public class Main3Activity extends BaseActivity {
     //历史记录，点击上报成功次数
     @BindView(R.id.success_n_c)
     TextView success_n_c;
+    //历史记录，bao guang shi bai
+    @BindView(R.id.e_en_c)
+    TextView e_en_c;
+    //历史记录，bao guang bu fa
+    @BindView(R.id.e_n_c)
+    TextView e_n_c;
 
     @Override
     protected int getLayout() {
@@ -47,13 +53,17 @@ public class Main3Activity extends BaseActivity {
         //历史记录，请求成功次数
         success_n.setText(OperationUtils.getId() + "");
         //历史记录，曝光上报总次数
-        all_n_e.setText(OperationUtils.getUserName() +"");
+        all_n_e.setText(OperationUtils.getUserName() + "");
         //历史记录，曝光上报成功次数
-        success_n_e.setText(OperationUtils.getLanguage()+"");
+        success_n_e.setText(OperationUtils.getLanguage() + "");
         //历史记录，点击上报总次数
-        all_n_c.setText(OperationUtils.getPassword()+"");
+        all_n_c.setText(OperationUtils.getPassword() + "");
         //历史记录，点击上报成功次数
-        success_n_c.setText(OperationUtils.getRoleId()+"");
+        success_n_c.setText(OperationUtils.getRoleId() + "");
+        //曝光失败
+        e_en_c.setText(OperationUtils.getexposureAppearFail()+"");
+        //曝光不发
+        e_n_c.setText(OperationUtils.getexposureAppearAgin()+"");
     }
 
     @Override

@@ -186,4 +186,40 @@ public class OperationUtils {
     public static String getImages() {
         return (String) SPUtils.get(App.mContext, "images", "");
     }
+
+    /**
+     * 存储图片广告
+     *
+     * @param images
+     */
+    public static void saveexposureAppearFail(int images) {
+        SPUtils.put(App.mContext, "images", images);
+    }
+
+    /**
+     * 获取图片广告
+     *
+     * @return
+     */
+    public static int getexposureAppearFail() {
+        return (int) SPUtils.get(App.mContext, "images", 0);
+    }
+
+    /**
+     * 存储图片广告
+     *
+     * @param images
+     */
+    public static void saveexposureAppearAgin(int images) {
+        SPUtils.put(App.mContext, "images", images);
+    }
+
+    /**
+     * 获取图片广告
+     *
+     * @return
+     */
+    public static int getexposureAppearAgin() {
+        return (int) SPUtils.get(App.mContext, "images", 0);
+    }
 }

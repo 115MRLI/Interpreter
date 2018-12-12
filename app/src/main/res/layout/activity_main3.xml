@@ -147,5 +147,51 @@
             android:textStyle="normal" />
 
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="曝光记录         "
+            android:textSize="11.5dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="曝光失败：   "
+            android:textSize="11.5dp" />
+
+        <TextView
+            android:id="@+id/e_en_c"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MI8 SE"
+            android:textColor="@color/colorAccent"
+            android:textSize="11.5dp"
+            android:textStyle="normal" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="补发：   "
+            android:textSize="11.5dp" />
+
+        <TextView
+            android:id="@+id/e_n_c"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:text="XIAOMI"
+            android:textColor="@color/colorAccent"
+            android:textSize="11.5dp"
+            android:textStyle="normal" />
+
+    </LinearLayout>
 </LinearLayout>

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
@@ -98,10 +99,11 @@ public class Main2Activity extends BaseActivity implements CommonPopupWindow.Vie
     //展示内容
     private String contexturl;
 
-    private boolean iscaozuo = false;
+    private boolean iscaozuo = false,isPic;
 
     private boolean isClick = false;
     private int exposureNumber_o, onceNumber_o, onceTime_o;
+    private int allnumber, allnumber2, allnumber3, allnumber4, allnumber5, allnumber6;
 
     @Override
     protected int getLayout() {
@@ -157,7 +159,7 @@ public class Main2Activity extends BaseActivity implements CommonPopupWindow.Vie
                     onceNumber_o = Integer.parseInt(onceNumber.getText().toString());
                     onceTime_o = Integer.parseInt(onceTime.getText().toString());
                     handler.postDelayed(runnable, 500);
-                    Timehandler.postDelayed(Timerunnable, onceTime_o*1000);
+                    Timehandler.postDelayed(Timerunnable, onceTime_o * 1000);
                 }
                 isClick = !isClick;
             }
@@ -180,19 +182,15 @@ public class Main2Activity extends BaseActivity implements CommonPopupWindow.Vie
     @Override
     public void getShowText(String context, boolean isPic, List<String> thclkurl, List<String> imgtracking) {
         contexturl = context;
+        this.isPic = isPic;
         Log.e("contexturl", "contexturl :" + contexturl + "isPic  :" + isPic);
-        if (isPic == true) {
 
-            showUpPopPic(top);
-        } else {
-            showUpPop(top);
-        }
     }
 
     @Override
     public void addResNumber(int number) {
-        int allnumber = Integer.parseInt(all.getText().toString()) + number;
-        all.setText(allnumber + "");
+        allnumber6 = Integer.parseInt(all.getText().toString()) + number;
+        viewHandler.sendEmptyMessage(6);
         if (onceNumber_o == 1) {
             if (popupWindow != null) {
                 popupWindow.dismiss();
@@ -213,8 +211,9 @@ public class Main2Activity extends BaseActivity implements CommonPopupWindow.Vie
 
     @Override
     public void addSuccessNumber(int number, List<String> imgtracking, List<String> thclkurl) {
-        int allnumber = Integer.parseInt(successNumber.getText().toString()) + number;
-        successNumber.setText(allnumber + "");
+        allnumber = Integer.parseInt(successNumber.getText().toString()) + number;
+
+        viewHandler.sendEmptyMessage(1);
         if (imgtracking != null) {
             this.imgtracking = imgtracking;
             for (int i = 0; i < imgtracking.size(); i++) {
@@ -227,27 +226,38 @@ public class Main2Activity extends BaseActivity implements CommonPopupWindow.Vie
 
     @Override
     public void clickRequestFunAll(int number) {
-        int allnumber = Integer.parseInt(clickRequest.getText().toString()) + number;
-        clickRequest.setText(allnumber + "");
+        allnumber2 = Integer.parseInt(clickRequest.getText().toString()) + number;
+        viewHandler.sendEmptyMessage(2);
 
     }
 
     @Override
     public void clickRequestFunSuccess(int number) {
-        int allnumber = Integer.parseInt(successClickRequest.getText().toString()) + number;
-        successClickRequest.setText(allnumber + "");
+        allnumber3 = Integer.parseInt(successClickRequest.getText().toString()) + number;
+        viewHandler.sendEmptyMessage(3);
+
     }
 
     @Override
     public void exposureAppearAll(int number) {
-        int allnumber = Integer.parseInt(exposureAppear.getText().toString()) + number;
-        exposureAppear.setText(allnumber + "");
+        allnumber4 = Integer.parseInt(exposureAppear.getText().toString()) + number;
+        viewHandler.sendEmptyMessage(4);
+    }
+
+    @Override
+    public void exposureAppearFail(int number) {
+
+    }
+
+    @Override
+    public void exposureAppearAgin(int bunber) {
+
     }
 
     @Override
     public void exposureAppearSuccess(int number, List<String> thclkurl) {
-        int allnumber = Integer.parseInt(successExposureAppear.getText().toString()) + number;
-        successExposureAppear.setText(allnumber + "");
+        allnumber5 = Integer.parseInt(successExposureAppear.getText().toString()) + number;
+        viewHandler.sendEmptyMessage(5);
         if (exposureNumber_o > 0) {
             if (thclkurl != null) {
                 for (int i = 0; i < thclkurl.size(); i++) {
@@ -402,6 +412,39 @@ public class Main2Activity extends BaseActivity implements CommonPopupWindow.Vie
         onceNumber_o = Integer.parseInt(onceNumber.getText().toString());
         onceTime_o = Integer.parseInt(onceTime.getText().toString());
         handler.postDelayed(runnable, 500);
-        Timehandler.postDelayed(Timerunnable, onceTime_o*1000);
+        Timehandler.postDelayed(Timerunnable, onceTime_o * 1000);
     }
+
+    private Handler viewHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case 1:
+                    successNumber.setText(allnumber + "");
+                    break;
+                case 2:
+                    clickRequest.setText(allnumber2 + "");
+                    break;
+                case 3:
+                    successClickRequest.setText(allnumber3 + "");
+                    if (isPic == true) {
+
+                        showUpPopPic(top);
+                    } else {
+                        showUpPop(top);
+                    }
+                    break;
+                case 4:
+                    exposureAppear.setText(allnumber4 + "");
+                    break;
+                case 5:
+                    successExposureAppear.setText(allnumber5 + "");
+                    break;
+                case 6:
+                    all.setText(allnumber6 + "");
+                    break;
+            }
+        }
+    };
 }

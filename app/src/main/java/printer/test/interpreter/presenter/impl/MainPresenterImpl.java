@@ -97,15 +97,18 @@ public class MainPresenterImpl<T extends MainView> implements MainPresenter<T> {
     }
 
     @Override
-    public void baoGuang(String adress, final List<String> thclkurl) {
-        Log.e("曝光", "曝光"+adress);
+    public void baoGuang(final String adress, final List<String> thclkurl) {
+        Log.e("曝光", "曝光" + adress);
         baoGuang.baoGuang(adress, new BaoGuang.NotificationInterface() {
             @Override
             public void onResponseCode(int code) {
                 if (code == 200) {
                     if (baseView != null) {
-                        baseView.exposureAppearSuccess(1,thclkurl);
+                        baseView.exposureAppearSuccess(1, thclkurl);
                     }
+                } else {
+                    baseView.exposureAppearFail(1);
+                    BaoGuangAgin(adress, thclkurl);
                 }
                 if (baseView != null) {
                     baseView.exposureAppearAll(1);
@@ -114,9 +117,34 @@ public class MainPresenterImpl<T extends MainView> implements MainPresenter<T> {
         });
     }
 
+    /**
+     * 曝光补发
+     *
+     * @param adress
+     */
+    private void BaoGuangAgin(String adress, final List<String> thclkurl) {
+        Log.e("曝光", "曝光" + adress);
+        baoGuang.baoGuang(adress, new BaoGuang.NotificationInterface() {
+            @Override
+            public void onResponseCode(int code) {
+                if (code == 200) {
+                    if (baseView != null) {
+                        baseView.exposureAppearSuccess(1, thclkurl);
+                    }
+                } else {
+                    baseView.exposureAppearFail(1);
+                }
+                if (baseView != null) {
+                    baseView.exposureAppearAgin(1);
+                }
+            }
+        });
+
+    }
+
     @Override
     public void dianJi(String adress) {
-        Log.e("曝光", "点击"+adress);
+        Log.e("曝光", "点击" + adress);
         baoGuang.dianJi(adress, new BaoGuang.NotificationInterface() {
             @Override
             public void onResponseCode(int code) {
