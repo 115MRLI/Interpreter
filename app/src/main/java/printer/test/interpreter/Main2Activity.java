@@ -84,7 +84,9 @@ public class Main2Activity extends BaseActivity implements CommonPopupWindow.Vie
     //跳转
     @BindView(R.id.jump)
     TextView jump;
-
+    //广告弹出时间
+    @BindView(R.id.web_showe)
+    EditText webShowe;
 
     private Main2Activity contetxt;
 
@@ -99,7 +101,7 @@ public class Main2Activity extends BaseActivity implements CommonPopupWindow.Vie
     //展示内容
     private String contexturl;
 
-    private boolean iscaozuo = false,isPic;
+    private boolean iscaozuo = false, isPic;
 
     private boolean isClick = false;
     private int exposureNumber_o, onceNumber_o, onceTime_o;
@@ -128,6 +130,7 @@ public class Main2Activity extends BaseActivity implements CommonPopupWindow.Vie
         exposureNumber.setText(10 + "");
         onceNumber.setText(40 + "");
         onceTime.setText(2 + "");
+        webShowe.setText(4 + "");
         //跳转
         jump.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -236,6 +239,7 @@ public class Main2Activity extends BaseActivity implements CommonPopupWindow.Vie
         allnumber3 = Integer.parseInt(successClickRequest.getText().toString()) + number;
         viewHandler.sendEmptyMessage(3);
 
+
     }
 
     @Override
@@ -258,13 +262,12 @@ public class Main2Activity extends BaseActivity implements CommonPopupWindow.Vie
     public void exposureAppearSuccess(int number, List<String> thclkurl) {
         allnumber5 = Integer.parseInt(successExposureAppear.getText().toString()) + number;
         viewHandler.sendEmptyMessage(5);
-        if (exposureNumber_o > 0) {
+        if (allnumber5 % exposureNumber_o == 0) {
             if (thclkurl != null) {
                 for (int i = 0; i < thclkurl.size(); i++) {
                     presenter.dianJi(thclkurl.get(i));
                 }
             }
-            exposureNumber_o = exposureNumber_o - 1;
         }
     }
 
@@ -434,6 +437,17 @@ public class Main2Activity extends BaseActivity implements CommonPopupWindow.Vie
                     } else {
                         showUpPop(top);
                     }
+                    CountDownTimer countDownTimer = new CountDownTimer(Integer.parseInt(webShowe.getText().toString()) * 1000, 1000) {
+                        @Override
+                        public void onTick(long millisUntilFinished) {
+
+                        }
+
+                        @Override
+                        public void onFinish() {
+                            viewHandler.sendEmptyMessage(10);
+                        }
+                    }.start();
                     break;
                 case 4:
                     exposureAppear.setText(allnumber4 + "");
@@ -443,6 +457,10 @@ public class Main2Activity extends BaseActivity implements CommonPopupWindow.Vie
                     break;
                 case 6:
                     all.setText(allnumber6 + "");
+                    break;
+                case 10:
+                    if (popupWindow != null && popupWindow.isShowing())
+                        popupWindow.dismiss();
                     break;
             }
         }

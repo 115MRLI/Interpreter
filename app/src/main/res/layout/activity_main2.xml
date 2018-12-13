@@ -250,6 +250,7 @@
             <EditText
                 android:id="@+id/once_number"
                 android:layout_width="0dp"
+                android:inputType="number"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
         </LinearLayout>
@@ -271,6 +272,7 @@
             <EditText
                 android:id="@+id/once_time"
                 android:layout_width="0dp"
+                android:inputType="number"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
         </LinearLayout>
@@ -295,14 +297,32 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="点击上报次数限制："
+            android:text="点击上报基数限制："
             android:textSize="11.5dp" />
 
         <EditText
             android:id="@+id/exposure_number"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:inputType="number"
             android:layout_weight="1" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="广告展示时间："
+            android:textSize="11.5dp" />
+
+        <EditText
+            android:id="@+id/web_showe"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:layout_weight="1" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="s"
+            android:textSize="11.5dp" />
     </LinearLayout>
 
     <LinearLayout
