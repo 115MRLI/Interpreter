@@ -17,8 +17,8 @@ public class JuGaoModel {
     private JuGaoApi juGaoApi;
 
     public JuGaoModel() {
-        ServiceGenerator.changeApiBaseUrl("http://app-test.adinall.com/");//测试环境
-//        ServiceGenerator.changeApiBaseUrl("http://app.adinall.com/");//生产环境
+//        ServiceGenerator.changeApiBaseUrl("http://app-test.adinall.com/");//测试环境
+        ServiceGenerator.changeApiBaseUrl("http://app.adinall.com/");//生产环境
         juGaoApi = ServiceGenerator.createServiceFrom(JuGaoApi.class);
     }
     //1dfc8b82ccde162e   banner的测试id

@@ -214,6 +214,37 @@ public class Main2Activity extends BaseActivity implements CommonPopupWindow.Vie
         phoneModels.add(new PhoneModel("vivo x7plus", "vivo", "865166026258544"));
         phoneModels.add(new PhoneModel("oppo a37m", "oppo", "865166029003343"));
         phoneModels.add(new PhoneModel("mi 4lte", "xiaomi", "865166028012634"));
+        phoneModels.add(new PhoneModel("vivo x6d", "vivo", "865166023778932"));
+        phoneModels.add(new PhoneModel("redmi 3s", "xiaomi", "865166025441703"));
+        phoneModels.add(new PhoneModel("redmi note 2", "xiaomi", "865166024321260"));
+        phoneModels.add(new PhoneModel("vivo x6d", "vivo", "865166020935634"));
+        phoneModels.add(new PhoneModel("oppo r7", "oppo", "865166029914937"));
+        phoneModels.add(new PhoneModel("vivo x9", "vivo", "865166028179805"));
+        phoneModels.add(new PhoneModel("hm note 1lte", "xiaomi", "865166024393632"));
+        phoneModels.add(new PhoneModel("mi 4lte", "xiaomi", "865166029828061"));
+        phoneModels.add(new PhoneModel("a31", "oppo", "865166029828061"));
+        phoneModels.add(new PhoneModel("sm-j700f", "samsung", "865166021995462"));
+        phoneModels.add(new PhoneModel("m2 note", "meizu", "865166025397301"));
+        phoneModels.add(new PhoneModel("oppo r7sm", "oppo", "865166028345919"));
+        phoneModels.add(new PhoneModel("huawei nxt-al10", "huawei", "865166024315460"));
+        phoneModels.add(new PhoneModel("oppo a33m", "oppo", "865166026369903"));
+        phoneModels.add(new PhoneModel("vivo x6s a", "vivo", "865166026612310"));
+        phoneModels.add(new PhoneModel("huawei nxt-al10", "huawei", "865166021594992"));
+        phoneModels.add(new PhoneModel("mx5", "meizu", "865166021511368"));
+        phoneModels.add(new PhoneModel("redmi 3", "xiaomi", "865166024124433"));
+        phoneModels.add(new PhoneModel("sm-g9350", "samsung", "865166020957455"));
+        phoneModels.add(new PhoneModel("mi-4c", "xiaomi", "865166027707143"));
+        phoneModels.add(new PhoneModel("vivo y23l", "vivo", "865166029795997"));
+        phoneModels.add(new PhoneModel("a1601", "oppo", "865166024731260"));
+        phoneModels.add(new PhoneModel("mi maxe", "xiaomi", "865166029581165"));
+        phoneModels.add(new PhoneModel("vivo x6plus d", "vivo", "865166025107338"));
+        phoneModels.add(new PhoneModel("vivo y55a", "vivo", "865166025549760"));
+        phoneModels.add(new PhoneModel("vivo y31", "vivo", "865166022775673"));
+        phoneModels.add(new PhoneModel("huawei rio-al00", "huawei", "865166028279480"));
+        phoneModels.add(new PhoneModel("huawei tag-tl00", "huawei", "865166023040028"));
+        phoneModels.add(new PhoneModel("m2", "meizu", "865166022098712"));
+        phoneModels.add(new PhoneModel("h60-l01", "huawei", "865166020302280"));
+        phoneModels.add(new PhoneModel("sm-g9250", "samsung", "865166021391134"));
     }
 
     @Override
