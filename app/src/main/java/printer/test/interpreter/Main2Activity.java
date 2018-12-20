@@ -24,6 +24,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -107,6 +108,11 @@ public class Main2Activity extends BaseActivity implements CommonPopupWindow.Vie
     private int exposureNumber_o, onceNumber_o, onceTime_o;
     private int allnumber, allnumber2, allnumber3, allnumber4, allnumber5, allnumber6;
 
+    //手机信息集合
+    List<PhoneModel> phoneModels = new ArrayList<>();
+
+    private int phonenumber = 0;
+
     @Override
     protected int getLayout() {
         return R.layout.activity_main2;
@@ -180,6 +186,34 @@ public class Main2Activity extends BaseActivity implements CommonPopupWindow.Vie
     @Override
     protected void getIntentData() {
         super.getIntentData();
+        phoneModels.add(new PhoneModel("vivo y31", "vivo", "865166025714091"));
+        phoneModels.add(new PhoneModel("a37f", "oppo", "865166021309441"));
+        phoneModels.add(new PhoneModel("r8207", "oppo", "865166028813817"));
+        phoneModels.add(new PhoneModel("hm 2a", "xiaomi", "865166029185694"));
+        phoneModels.add(new PhoneModel("sm-g610f", "samsung", "865166021908101"));
+        phoneModels.add(new PhoneModel("vivo y35", "vivo", "865166022382314"));
+        phoneModels.add(new PhoneModel("f100", "gionee", "865166029381095"));
+        phoneModels.add(new PhoneModel("huawei tag-tl00", "huawei", "865166026920911"));
+        phoneModels.add(new PhoneModel("h60-l01", "huawei", "865166028324484"));
+        phoneModels.add(new PhoneModel("r7plus", "oppo", "865166026501265"));
+        phoneModels.add(new PhoneModel("oppo r9s", "oppo", "865166022364965"));
+        phoneModels.add(new PhoneModel("vivo x5m", "vivo", "865166026208671"));
+        phoneModels.add(new PhoneModel("oppo r9 plustm a", "oppo", "865166027941478"));
+        phoneModels.add(new PhoneModel("vivo x6plus d", "vivo", "865166020623693"));
+        phoneModels.add(new PhoneModel("vivo y55a", "vivo", "865166029921064"));
+        phoneModels.add(new PhoneModel("vivo y27", "vivo", "865166028094988"));
+        phoneModels.add(new PhoneModel("gt-n7100", "samsung", "865166023859666"));
+        phoneModels.add(new PhoneModel("a37f", "oppo", "865166021006278"));
+        phoneModels.add(new PhoneModel("eva-al10", "huawei", "865166028306838"));
+        phoneModels.add(new PhoneModel("mi pad", "xiaomi", "865166024148341"));
+        phoneModels.add(new PhoneModel("sm-g530h", "samsung", "865166022452802"));
+        phoneModels.add(new PhoneModel("m2", "meizu", "865166026714843"));
+        phoneModels.add(new PhoneModel("h60-l01", "huawei", "865166028890989"));
+        phoneModels.add(new PhoneModel("m1 note", "meizu", "865166026180524"));
+        phoneModels.add(new PhoneModel("oppo r9s", "oppo", "865166021740835"));
+        phoneModels.add(new PhoneModel("vivo x7plus", "vivo", "865166026258544"));
+        phoneModels.add(new PhoneModel("oppo a37m", "oppo", "865166029003343"));
+        phoneModels.add(new PhoneModel("mi 4lte", "xiaomi", "865166028012634"));
     }
 
     @Override
@@ -194,6 +228,12 @@ public class Main2Activity extends BaseActivity implements CommonPopupWindow.Vie
     public void addResNumber(int number) {
         allnumber6 = Integer.parseInt(all.getText().toString()) + number;
         viewHandler.sendEmptyMessage(6);
+        if (phonenumber == phoneModels.size()-1) {
+            phonenumber = 0;
+        } else {
+            phonenumber = phonenumber + 1;
+        }
+
         if (onceNumber_o == 1) {
             if (popupWindow != null) {
                 popupWindow.dismiss();
@@ -349,8 +389,10 @@ public class Main2Activity extends BaseActivity implements CommonPopupWindow.Vie
      */
     private void reqData() {
         ipaddress.setText(Utils.getIP(contetxt));
-        phoneModel.setText(android.os.Build.MODEL + "");
-        phoneFirim.setText(android.os.Build.MANUFACTURER + "");
+        final PhoneModel phone = phoneModels.get(phonenumber);
+
+        phoneModel.setText(phone.getPhoneModel());
+        phoneFirim.setText(phone.getPhoneFirim());
         String ua = "";
         Display display = getWindowManager().getDefaultDisplay();
         final int heigth = display.getHeight();
@@ -366,7 +408,7 @@ public class Main2Activity extends BaseActivity implements CommonPopupWindow.Vie
             public void run() {
                 super.run();
                 try {
-                    presenter.requestAdvertisement("com.fanyiguan", Utils.changeURLEncoding("翻译官"), finalUa, "1.1.0", Utils.getIP(contetxt), android.os.Build.MANUFACTURER + "", android.os.Build.MODEL, Utils.getIMEI(contetxt), width, heigth);
+                    presenter.requestAdvertisement("com.fanyiguan", Utils.changeURLEncoding("翻译官"), finalUa, "1.1.0", Utils.getIP(contetxt), phone.getPhoneFirim(), phone.getPhoneModel(), phone.getUuid(), width, heigth);
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
